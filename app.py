@@ -75,6 +75,25 @@ def get_autori():
     conn.close()
     return autori
 
+from openpyxl import load_workbook
+
+def append_to_excel(autore, album, anno, genere, formato):
+    if not os.path.exists(EXCEL_PATH):
+        return  # Se il file non esiste, salta
+
+    wb = load_workbook(EXCEL_PATH)
+    sheet_name = 'CD' if formato == 'CD' else 'Vinili'
+    ws = wb[sheet_name]
+
+    # Trova la prima riga vuota
+    next_row = ws.max_row + 1
+    ws.cell(row=next_row, column=2, value=autore)
+    ws.cell(row=next_row, column=3, value=album)
+    ws.cell(row=next_row, column=4, value=anno)
+    ws.cell(row=next_row, column=5, value=genere)
+    
+    wb.save(EXCEL_PATH)
+
 # 🚀 Interfaccia Streamlit
 st.set_page_config(page_title="Archivio Dischi", layout="centered")
 st.title("🎵 Archivio Dischi Casalingo")
@@ -111,6 +130,8 @@ elif menu == "Aggiungi":
         genere = st.text_input("Genere")
         formato = st.selectbox("Formato", ["CD", "Vinile"])
         submitted = st.form_submit_button("Aggiungi")
-        if submitted:
+        if submitted and autore_finale:
             insert_disco(autore_finale, album, anno, genere, formato)
+            append_to_excel(autore_finale, album, anno, genere, formato)
             st.success(f"Disco di {autore_finale} aggiunto con successo!")
+    
