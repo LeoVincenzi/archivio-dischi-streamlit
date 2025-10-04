@@ -66,6 +66,15 @@ def get_all_dischi():
     conn.close()
     return df
 
+# Recupera autori esistenti
+def get_autori():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT autore FROM dischi ORDER BY autore")
+    autori = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return autori
+
 # 🚀 Interfaccia Streamlit
 st.set_page_config(page_title="Archivio Dischi", layout="centered")
 st.title("🎵 Archivio Dischi Casalingo")
@@ -92,12 +101,16 @@ elif menu == "Cerca":
 elif menu == "Aggiungi":
     st.subheader("➕ Aggiungi un nuovo disco")
     with st.form("add_form"):
-        autore = st.text_input("Autore")
+        autori_esistenti = get_autori()
+        autore = st.selectbox("Autore (scegli o scrivi)", options=[""] + autori_esistenti, index=0)
+        autore_libero = st.text_input("Oppure inserisci un nuovo autore")
+        # Priorità al campo libero se compilato
+        autore_finale = autore_libero if autore_libero else autore
         album = st.text_input("Album")
         anno = st.number_input("Anno", min_value=1900, max_value=2100, step=1)
         genere = st.text_input("Genere")
         formato = st.selectbox("Formato", ["CD", "Vinile"])
         submitted = st.form_submit_button("Aggiungi")
         if submitted:
-            insert_disco(autore, album, anno, genere, formato)
-            st.success("Disco aggiunto con successo!")
+            insert_disco(autore_finale, album, anno, genere, formato)
+            st.success(f"Disco di {autore_finale} aggiunto con successo!")
