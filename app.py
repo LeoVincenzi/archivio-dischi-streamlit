@@ -93,10 +93,10 @@ def append_to_excel(autore, album, anno, genere, formato):
 
     # Trova la prima riga vuota
     next_row = ws.max_row + 1
-    ws.cell(row=next_row, column=2, value=autore)
-    ws.cell(row=next_row, column=3, value=album)
-    ws.cell(row=next_row, column=4, value=anno)
-    ws.cell(row=next_row, column=5, value=genere)
+    ws.cell(row=next_row, column=1, value=autore)
+    ws.cell(row=next_row, column=2, value=album)
+    ws.cell(row=next_row, column=3, value=anno)
+    ws.cell(row=next_row, column=4, value=genere)
     
     wb.save(EXCEL_PATH)
 
@@ -116,7 +116,7 @@ if menu == "Visualizza":
     st.download_button(
         label="📥 Scarica Excel aggiornato",
         data=get_excel_download(),
-        file_name="Discografia casa Vincenzi.xlsx",
+        file_name="Discografia casa Vincenzi",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
