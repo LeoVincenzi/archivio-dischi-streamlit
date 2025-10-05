@@ -116,7 +116,7 @@ if menu == "Visualizza":
     st.download_button(
         label="📥 Scarica Excel aggiornato",
         data=get_excel_download(),
-        file_name="archivio_dischi.xlsx",
+        file_name="Discografia casa Vincenzi.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
