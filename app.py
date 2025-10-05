@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import os
+from io import BytesIO
 
 DB_PATH = 'db.sqlite3'
 EXCEL_PATH = 'Discografia casa Vincenzi.xlsx'
@@ -22,6 +23,11 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+def get_excel_download():
+    with open(EXCEL_PATH, 'rb') as f:
+        excel_bytes = f.read()
+    return excel_bytes
 
 # 📥 Importa da Excel con due fogli
 def import_excel():
@@ -107,6 +113,12 @@ if menu == "Visualizza":
     st.subheader("📀 Tutti i dischi")
     df = get_all_dischi()
     st.dataframe(df)
+    st.download_button(
+        label="📥 Scarica Excel aggiornato",
+        data=get_excel_download(),
+        file_name="archivio_dischi.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 elif menu == "Cerca":
     query = st.text_input("🔍 Cerca per album o autore")
